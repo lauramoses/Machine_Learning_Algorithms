@@ -6,4 +6,4 @@ Files in this repository are of jupyter notebooks that are created from the mach
 
 The notebook contains machine learning projects in Julia v.1.5.3 and Python v.3.
 
-Python projects in this notebook are made using imported machine learning libraries including Skikit Learn, keras, and Tensorflow. For these projects, we will follow the topics discussed in "Hands-on Machine Learning with Scikit-Learn, Keras, and TensorFlow" by Aurelien Geron (2nd Edition). A link to a copy of the book can be found (here). 
+Python projects in this notebook are made using imported machine learning libraries including Skikit Learn, keras, and Tensorflow. For these projects, we will follow the topics discussed in "Hands-on Machine Learning with Scikit-Learn, Keras, and TensorFlow" by Aurelien Geron (2nd Edition). A link to a copy of the book can be found [here](https://www.amazon.com/Hands-Machine-Learning-Scikit-Learn-TensorFlow/dp/1492032646). 

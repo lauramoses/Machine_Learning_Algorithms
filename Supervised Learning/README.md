@@ -15,7 +15,7 @@ There are 8 Supervised Machine Learning algorithms performed, mainly from scratc
 * `Gradient_Descent_Julia` - Using Batch Gradient Descent and Stochastic Gradient Descent from scratch to apply linear regression on Advertising data *(Julia)*
 * `K_Nearest_Neighbors_Julia` - Using KNN from scratch on the Iris dataset, determining the optimal K for most accurate prediction *(Julia)*
 * `Linear_Regression_Julia` - Predicting nasal length from nasal width of a kangaroo using Linear Regression from scratch *(Julia)*
-* `Logistic_Regression_Julia` - Detecting Coronary Heart Disease in males with Logistic Regression from scratch on SAheart data *(Julia)*
+* `Logistic_Regression_Julia` - Projecting a student's admission into grad school with Logistic Regression from scratch on Candidate data *(Julia)*
 * `Neural_Networks_Julia` - Using a Neural Network from scratch to predict labels on MNIST dataset *(Julia)*
 * `Perceptron_Learning_Julia` - Using the Perceptron Learning Algorithm from scratch to classify Iris data *(Julia)*
 * `Perceptron_Pocket_R` - Using the Perceptron Pocket Algorithm from scratch on artifically generated data for classification *(R)*

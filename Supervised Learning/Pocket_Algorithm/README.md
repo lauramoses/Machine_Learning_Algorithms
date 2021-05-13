@@ -1,3 +1,0 @@
-# Pocket Algorithm
-
-Add this...

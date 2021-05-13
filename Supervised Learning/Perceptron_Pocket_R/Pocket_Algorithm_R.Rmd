@@ -1,0 +1,204 @@
+---
+title: "Pocket Perceptron Algorithm  on Artificial Data"
+author: "Laura Moses"
+date: "5/6/2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Pocket Perceptron Algorithm
+
+This is a variation of the Perceptron Learning Algorithm and is known as the **Pocket Perceptron Algorithm.** 
+
+### Inputs: 
+
+* `x`: A two-dimensional matrix, where the rows are the observations and the columns are the input features. 
+* `y`: A vector with the class label (-1 or 1) for all the observations in x.
+* `learning_rate`: A number that controls the learning rate of the algorithm. 
+* `max_iterations`: The maximum number of cycles through our data that our algorithm is allowed to perform while learning. 
+
+### Outputs: 
+
+* `w`: The learned weights of the perceptron
+* `converged`: Whether the algorithm converged (true or false). 
+* `iterations`: The actual number of iterations through the data performed during learning. 
+
+### Method: 
+
+  1. Randomly initialize the weights $w$. 
+  1. Select an observation in $x$, and call it `xi`. 
+  1. Computer the predicted class, $\hat y_i$, using the current values of the weights $w$ and the equation for the output of the perceptron. 
+  1. If the predicted class, $\hat y_i$ is not the same as the actual class, `yi` then update the weights vector using stochastic gradient descent. 
+  1. Repeat steps 2-4 for all the other observations in our dataset and count the number of errors made. 
+  1. If the number of errors is zero, we have converged and the algorithm terminates. 
+  1. If the number of errors made in the current iteration was less than the lowest number of errors ever made, store the weights vector as the best weights vector seen so far. 
+  1. If we have reached the maximum number of iterations, stop and return the value of the best weights vector. Otherwise, begin a new iteration over the dataset at step 2.
+  
+### Functions:
+
+```{r}
+# step_function: 
+## will produce either -1 or 1 corresponding to the two classes in dataset
+step_function <- function(x) {
+  if (x < 0) -1 else 1
+}
+```
+
+
+```{r}
+# pocket_perceptron: 
+## objective to learn the weights for perceptron so that model classifies training data correctly
+pocket_perceptron <- function(x, y, learning_rate, max_iterations){
+  
+  nObs = nrow(x) # Number of observations
+  nFeatures = ncol(x) # Number of features 
+  w = rnorm(nFeatures + 1, 0, 2) # Random weight initialization
+  current_iteration = 0 # Initialize iteration
+  has_converged = F # Initialize convergence to F
+  best_weights = w # Initialize best weights to current weights
+  
+  
+  best_error = nObs # Assume worst possible error rate on dataset
+  
+  while ((has_converged == F) & (current_iteration < max_iterations)){
+
+    has_converged = T # Assume we are done unless we misclassify an observation
+    
+    # Keep track of misclassified observations 
+    current_error = 0
+    for (i in 1:nObs) {
+      xi = c(1, x[i,]) # Append 1 for the dummy input feature x0
+      yi = y[i]
+      y_predicted = step_function(sum(w * xi))
+      
+      if (yi != y_predicted){
+        current_error = current_error + 1
+        
+        # We have at least one misclassified example
+        has_converged = F
+        w = w - learning_rate * sign(y_predicted - yi) * xi
+      }
+    }
+    
+    if (current_error < best_error){
+      best_error = current_error
+      best_weights = w
+    }
+    current_iteration = current_iteration + 1
+  }
+  
+  model <- list("weights" = best_weights, 
+                "converged" = has_converged, 
+                "iterations" = current_iteration)
+  model
+}
+```
+
+The main `while` loop of the function controls the number of iterations over which the algorithm will run. We will only begin a new iteration when we have not converged and when we have not hit the maximum number of iterations. Inside the `while` loop, is a `for` loop to iterate over the observations in the dataset and classify these using the current version of the weight vector. 
+
+Every time a mistake is made in classification, the error rate is updated. Note that we have *not* converged in this iteration and update the weight vector according to the stochastic gradient descent update rule for least squares. Although the cost function for the perceptron is not differentiable because of the step function used to threshold the output, we can still use the same update rule for the weights. 
+
+At the end of a complete iteration through the dataset, also known as an **epoch,** we check whether we need to update the best weights vector and update the number of iterations. We choose to update the best weights vector *only if* the performance in the current iteration on the training data was the best performance seen thus far across all completed iterations. When the algorithm terminates, it returns the best weights found, whether or not the data converged, and the total number of completed iterations. 
+
+### Test the Model
+
+In order to test the model, we will be generating some artificial data. To do this, sample values from two uniform distributions in order to create two input features: $x_1$ and $x_2$. Then, separate these data points into two different classes according to a linear decision boundary chosen randomly: 
+
+$$
+\begin{equation}
+y = \{
+\begin{split}
+-1, & -0.89 + 2.07x_1 - 3.09x_2 < 0 \\
+ 1, & \ \ otherwise
+\end{split}
+\end{equation}
+$$
+Thus, for our 2-dimensional dataset, the perceptron will learn weights that approximate the following 3-dimensional hyperplane: 
+$$x_3 = w_1x_1 + w_2x_2 + w_3 \\ = 2.07x_1 - 3.09x_2 - 0.89$$
+
+#### Generating artificial data 
+
+Once the data and labels are computed, we can run the perceptron algorithm on it. The following code generates the test data: 
+
+```{r}
+# Generate randomized uniform data
+set.seed(4910341)
+x1 <- runif(200, 0, 10)
+set.seed(2125151)
+x2 <- runif(200, 0, 10)
+x <- cbind(x1, x2)
+y <- sign(-0.89 + 2.07 * x[,1] - 3.09 * x[,2])
+```
+
+
+#### Build the model
+
+Now we build the model by running the pocket perceptron algorithm 
+
+```{r}
+alpha <- 0.1
+max_epochs <- 1000
+
+pmodel <- pocket_perceptron(x, y, alpha, max_epochs)
+pmodel
+```
+
+The predicted weights for our model are: 
+
+$$x_3 = `r round(pmodel$weights[2], 2)` x_1  `r round(pmodel$weights[3], 2)` x_2  `r round(pmodel$weights[1], 2)`$$
+which match very closely to our original weights. 
+
+#### Plot the results 
+
+In order to plot, we solve the following to represent $x_2$ in terms of $x_1$ with all three weights: 
+
+$$x_3 = w_1x_1 + w_2x_2 + w_3$$
+$$x_2 = w_1x_1 + w_2$$
+$$ 0 = w_1x_1 + w_2$$
+$$ \rightarrow x_1 = -w_2/w_1$$
+Setting $x_3 = 0$ and solving for $x_2$, we get the following line in 2-dimensional space: $$x_2 = -\frac{w_2}{w_3}x_1 - \frac{w_1}{w_3} = \frac{-w_2x_1 -w_1}{w_3}$$
+
+Plotting this line on the data scatter plot will show that the data has been split into two distinct groups, showing it is **linearly separable:** 
+
+
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+
+w_pred = pmodel$weights[1:3] # predicted weights 
+w_true = c(-.89, 2.07, -3.09) # original weights
+
+x2_pred = (-w_pred[2]*x1 - w_pred[1]) / w_pred[3] # using predicted weights
+x2_true = (-w_true[2]*x1 - w_true[1]) / w_true[3] # using true weights
+
+dat = data.frame(x1, x2, y, x2_pred, x2_true) # df to pass to ggplot
+  
+ggplot(data = dat) + 
+  geom_point(
+    mapping = aes(x=x1, y=x2, color = factor(y))) +
+  scale_x_continuous(limits = range(x1)) + 
+  scale_y_continuous(limits = range(x2)) +
+  scale_color_discrete(limits = factor(unique(y))) +
+  geom_line(
+    mapping = aes(x = x1, y = x2_pred), 
+    color = "lightsteelblue4",
+    size = 2,
+    linetype = "dashed") +
+  geom_line(
+    mapping = aes(x = x1, y = x2_true), 
+    color = "orchid",
+    size = 1) +
+labs(
+  title = "Binary Classification with the Perceptron Algorithm",
+  x = "Feature 1", 
+  y = "Feature 2",
+  color = "Class Labels")
+```
+
+In the Figure above, the predicted model line is given by the dashed blue line, and the population line is given by the solid purple line. We can see that our model approximates the original very well, and does indeed linearly separate the two classes of data. 
+
+

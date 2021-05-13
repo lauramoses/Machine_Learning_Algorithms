@@ -7,4 +7,3 @@ The following packages will be needed to run the code below:
 
 * CSV [documentation](https://csv.juliadata.org/stable/)
 * DataFrames [documentation](https://dataframes.juliadata.org/stable/)
-* Random [documentation](https://docs.julialang.org/en/v1/stdlib/Random/)

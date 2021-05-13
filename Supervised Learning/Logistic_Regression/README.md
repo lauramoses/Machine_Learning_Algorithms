@@ -2,7 +2,7 @@
 ## Contents 
 In this notebook, we will be using the dataset [SAheart](https://web.stanford.edu/~hastie/ElemStatLearn//datasets/SAheart.data), to predict if a person has coronary heart disease (CHD) based on some attributes using logistic regression from scratch.
 ## SAheart Data
-The dataset comes from a retrospective sample of males in a heart-disease high-risk region of the Western Cape, South Africa. There are roughly two controls per case of CHD, thus this is our response $y$. These data are taken from a larger dataset, described in  *Rousseauw et al, 1983, South African Medical Journal*. 
+The dataset comes from a retrospective sample of males in a heart-disease high-risk region of the Western Cape, South Africa. There are roughly two controls per case of CHD, thus this is our target variable, *y*. These data are taken from a larger dataset, described in  *Rousseauw et al, 1983, South African Medical Journal*. 
 
 The dataset includes the following columns: 
 
